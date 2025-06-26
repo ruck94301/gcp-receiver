@@ -1,2 +1,2 @@
-gunicorn  # ==20.1.0  # Or the version you need [1]
+gunicorn
 cherrypy
