@@ -1,2 +1,4 @@
 gunicorn
 cherrypy
+google-cloud-storage
+PyYAML
