@@ -71,29 +71,14 @@ import yaml  # PyYAML, YAML parser and emitter for Python
 # (none)
 
 
-# logging.info('%s: %r', 'storage', storage)
-# import google.cloud
-# from google.cloud import storage
-# logging.info('%s: %r', 'storage', storage)
-# sys.exit('intentional abend')
-#
-# # bucket_name for google cloud storage
-# bucket_name = 'bucketname'
-#
-# with open('config-gcp.yaml', 'r') as f:
-#     config = yaml.safe_load(f)
-# bucket_name = config.get('bucket_name')
-# logging.info('%s: %r', 'config', config)
-
-
 @cherrypy.expose
 class MyWebService(object):
 
     def __init__(self, bucket=None, gcs_filesystem=None):
-          self.bucket = bucket
-          logging.info('%s: %r', 'self.bucket', self.bucket)
-          self.gcs_filesystem = gcs_filesystem
-          logging.info('%s: %r', 'self.gcs_filesystem', self.gcs_filesystem)
+        self.bucket = bucket
+        logging.info('%s: %r', 'self.bucket', self.bucket)
+        self.gcs_filesystem = gcs_filesystem
+        logging.info('%s: %r', 'self.gcs_filesystem', self.gcs_filesystem)
 
 
     def myname(self):
@@ -102,6 +87,7 @@ class MyWebService(object):
         class_name = __class__.__name__
         # return f'method {method_name} of class {class_name}'
         return f'{class_name}.{method_name}'
+
 
     def mywrite_jsonfile(self, file_name, data):
         # sanity check
@@ -118,6 +104,7 @@ class MyWebService(object):
             assert not is_running_on_gcp()
             with open(file_name, 'w') as f:
                 json.dump(data, f)
+
 
     def mylist(self):
         """Return a list of filenames."""
@@ -174,7 +161,6 @@ class MyWebService(object):
                     result.append(','.join([*buf, f'{record}']))
                 else:
                     result.append(f'{record}')
-                
 
         else:
             assert not is_running_on_gcp()
@@ -296,22 +282,16 @@ class MyWebService(object):
             else:
                 result.append('unrecognized action')
 
-
-        """
-        if kwargs.get('action') == 'walk':
-            if is_running_on_gcp():
-
-            else:
-"""
-
         msg = f'Method {self.myname()} returning.'
         logging.info(msg)
         return '\n'.join([msg, '', '', *result])
+
 
     def PUT(self, *args, **kwargs):
         msg = f'Method {self.myname()} is not implemented'
         logging.info(msg)
         return msg
+
 
     def DELETE(self, *args, **kwargs):
         msg = f'Method {self.myname()} is not implemented'
@@ -327,10 +307,6 @@ conf = {
         'tools.response_headers.headers': [('Content-Type', 'text/plain')],
     }
 }
-# cherrypy.config.update({
-#     'server.socket_host': '0.0.0.0',
-#     'server.socket_port': 8080,
-#     })
 
 
 if is_running_on_gcp():
