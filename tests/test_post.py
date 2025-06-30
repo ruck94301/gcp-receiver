@@ -1,9 +1,27 @@
 import logging
 import logging.handlers
 
+
+http_handler_config = {
+    # Host and optional port
+    # 'host': 'localhost:8080',
+    'host': 'solid-skill-463519-e0.appspot.com',  
+    }
+
+http_handler_config.update({
+    'url': '/',  # URL path on the server
+    'secure': True,  # Use HTTPS if needed
+    'method': 'POST',  # Specify POST method
+
+    # Optional basic authentication
+    # 'credentials': ('username', 'password'),  
+    })
+
+
 def reset_central_logger(logger):
     """Reset the Central Logger.  (Useful during interactive dev.)"""
     assert logger.name == 'Central Logger'
+
     if hasattr(logger, 'configured'):
          delattr(logger, 'configured')
 
@@ -35,11 +53,16 @@ def get_central_logger(reset=False):
         server using the HTTPHandler class. This allows for centralized 
         log management by sending logs to a remote endpoint."
 
-    Dev 
-        import mylogging
-        import importlib
-        importlib.reload(mylogging)
-        central_logger = mylogging.get_central_logger(reset=True)
+    Dev, with this file named sandbox.py
+        >>> import importlib
+        >>> import logging
+        >>> logging.basicConfig()
+        >>> import sandbox
+
+        (edit/save sandbox.py)
+        >>> importlib.reload(sandbox)
+        >>> central_logger = sandbox.get_central_logger(reset=True)
+        >>> central_logger.info({'name': 'Lyndon Baines Johnson', 'id': 36})
     """
 
     central_logger = logging.getLogger('Central Logger')
@@ -56,37 +79,14 @@ def get_central_logger(reset=False):
     # Prepare a handler.
     # An HTTPHandler doesn't use a Formatter, so using setFormatter() to 
     # specify a Formatter for an HTTPHandler has no effect.
-    http_handler = logging.handlers.HTTPHandler(
-        # host='your_server.com:8000',  # Host and optional port
-        # url='/log_endpoint',         # URL path on the server
-
-        host='solid-skill-463519-e0.appspot.com',
-        # secure=True,                 # Use HTTPS if needed
-        # host='localhost:8080',
-        secure=False,                 # Use HTTPS if needed
-
-        url='/',
-        method='POST',               # Specify POST method
-
-        # credentials=('username', 'password') # Optional basic authentication
-        )
+    http_handler = logging.handlers.HTTPHandler(**http_handler_config)
 
     # Add the handler to the logger
     central_logger.addHandler(http_handler)
 
-    # during dev, consider 
-    #     add a shadow handler, or, set propagate to True
-    #     logging.raiseExceptions=True
-    #
-    # # if config dir exists so that logfile can be written...
-    # h2 = logging.FileHandler(
-    #     os.path.join(os.path.expanduser('~'), '.mydev.centrallogger.log'),
-    #     mode='a')
-    # h2.setFormatter(f)
-    # central_logger.addHandler(h2)
-
     central_logger.configured = True
     return central_logger
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
@@ -97,8 +97,7 @@ if __name__ == '__main__':
         'name': 'James Stewart', 
         'rank': 'Brigadier General',
         'serial number': 'O-433210',
-        'vicelist': [None, True],
         }
 
+    logging.info(reginfo)
     central_logger.info(reginfo)
-    # central_logger.info('yabba')
