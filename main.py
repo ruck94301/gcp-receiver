@@ -312,7 +312,7 @@ conf = {
 if is_running_on_gcp():
     logging.info('Running on Google Cloud')
 
-    with open('config-gcp.yaml', 'r') as f:
+    with open('main-gcp.yaml', 'r') as f:
         config = yaml.safe_load(f)
     logging.info('%s: %r', 'config', config)
 
