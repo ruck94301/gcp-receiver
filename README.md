@@ -13,4 +13,7 @@ See google doc [Cloud-based receiver on GCP](https://docs.google.com/document/d/
     Exercise POST handling by running the included python script.<br>
     Exercise GET handling (to review POST data) by browsing to the
     GCP-Project URL, with query parameters.
-* For "production" use, "deploy" the app to GCP, and provide the GCP-Project URL for use by the sender sw.
+* For "production" use,
+    1. in main-gcp.yaml, disable the GET query actions (to provide data privacy),
+    2. "deploy" the app to GCP,
+    3. provide the GCP-Project URL for use by the sender sw.
