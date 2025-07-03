@@ -1,6 +1,9 @@
 # gcp-receiver
 Cloud-based receiver on GCP
 
+github repo "gcp-receiver"<br>
+README
+
 See google doc [Cloud-based receiver on GCP](https://docs.google.com/document/d/1F-k4PVgspK_OX9KaKR1LuEugTwXeQbvugA7dqxMoYlk).
 
 * This webservice app is implemented in Python and CherryPy.
@@ -16,4 +19,5 @@ See google doc [Cloud-based receiver on GCP](https://docs.google.com/document/d/
 * For "production" use,
     1. in main-gcp.yaml, disable the GET query actions (to provide data privacy),
     2. "deploy" the app to GCP,
-    3. provide the GCP-Project URL for use by the sender sw.
+    3. provide the GCP-Project URL for use by the sender sw,
+    4. smoke test.
