@@ -100,7 +100,7 @@ class MyWebService(object):
         if self.bucket:
             assert is_running_on_gcp()
 
-            blob = bucket.blob(file_name)
+            blob = self.bucket.blob(file_name)
             with blob.open(mode='w') as f:
                 json.dump(data, f)
 
@@ -146,19 +146,27 @@ class MyWebService(object):
             assert is_running_on_gcp()
             result = []
 
-            fieldnames = ['received', 'name', 'email', 'affiliation', 'platform']
             if flavor == 'csv':
+                fieldnames = [
+                    'received', 
+                    'name', 'email', 'affiliation', 'platform']
                 result.append(','.join(fieldnames))
 
             blobs = self.bucket.list_blobs()
             for blob in blobs:
                 # result.append(blob.name)
-                gcs_path = f'gs://{bucket.name}/{blob.name}'
+                gcs_path = f'gs://{self.bucket.name}/{blob.name}'
                 logging.info('%s: %r', 'gcs_path', gcs_path)
                 with self.gcs_filesystem.open(gcs_path) as f:
                     record = json.load(f)
 
                 if flavor == 'csv':
+                    # flatten the received timestamp into the data dictionary
+                    if (set(record.keys()) == set(['received', 'data'])
+                            and 'received' not in record['data'].keys()):
+                        data = record.pop('data')
+                        record.update(data)
+
                     buf = []
                     for fieldname in fieldnames:
                         buf.append(record.pop(fieldname, ''))
