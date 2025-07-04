@@ -74,11 +74,15 @@ import yaml  # PyYAML, YAML parser and emitter for Python
 @cherrypy.expose
 class MyWebService(object):
 
-    def __init__(self, bucket=None, gcs_filesystem=None):
-        self.bucket = bucket
-        logging.info('%s: %r', 'self.bucket', self.bucket)
-        self.gcs_filesystem = gcs_filesystem
-        logging.info('%s: %r', 'self.gcs_filesystem', self.gcs_filesystem)
+    def __init__(self, bucket=None, gcs_filesystem=None, config={}):
+        if is_running_on_gcp():
+            client = storage.Client()
+            self.bucket = client.get_bucket(config.get('bucket_name'))
+            self.gcs_filesystem = gcsfs.GCSFileSystem(
+                project=config.get('project_name'))
+
+        self.enable_get_actions = config.get('enable_get_actions', False)
+        logging.info('%s: %r', 'vars(self)', vars(self))
 
 
     def myname(self):
@@ -260,27 +264,30 @@ class MyWebService(object):
         # result is a list of strings
         result = []
 
+        # append the query string's key-value pairs
         for key, value in kwargs.items():
             result.append(f'{key}: {value!r}')
         result.extend(['', ''])
 
         # process the actions
-        for index, action in enumerate(actions):
-            if index > 0:
-                result.append('')
+        if self.enable_get_actions == True:
+            for index, action in enumerate(actions):
+                if index > 0:
+                    result.append('')
 
-            if action == 'list':
-                result.extend(self.mylist())
-            elif action == 'dump':
-                result.extend(self.mydump())
-            elif action == 'dumpcsv':
-                result.extend(self.mydump(flavor='csv'))
-            elif action == 'nop':
-                result.append('nop')
-            elif action == 'evil':
-                result.append('evil')
-            else:
-                result.append('unrecognized action')
+                if action == 'list':
+                    result.extend(self.mylist())
+                elif action == 'dump':
+                    result.extend(self.mydump())
+                elif action == 'dumpcsv':
+                    result.extend(self.mydump(flavor='csv'))
+                elif action == 'nop':
+                    result.append(f'action {action!r}')
+                else:
+                    result.append(f'action {action!r} unrecognized')
+        else:
+            for index, action in enumerate(actions):
+                result.append(f'action {action!r} disabled')
 
         msg = f'Method {self.myname()} returning.'
         logging.info(msg)
@@ -313,12 +320,13 @@ if is_running_on_gcp():
     logging.info('Running on Google Cloud')
 
     with open('main-gcp.yaml', 'r') as f:
-        config = yaml.safe_load(f)
-    logging.info('%s: %r', 'config', config)
+        main_config = yaml.safe_load(f)
+    logging.info('%s: %r', 'main_config', main_config)
 
-    client = storage.Client()
-    bucket = client.get_bucket(config.get('bucket_name'))
-    gcs_filesystem = gcsfs.GCSFileSystem(project=config.get('project_name'))
+    # x1
+    # client = storage.Client()
+    # bucket = client.get_bucket(config.get('bucket_name'))
+    # gcs_filesystem = gcsfs.GCSFileSystem(project=config.get('project_name'))
 
     # This adapted from search: cherrypy app wsgi main
     #   Mount the CherryPy application to get a WSGI callable
@@ -329,7 +337,9 @@ if is_running_on_gcp():
     #       gunicorn -w 4 your_module:myapp
 
     myapp = cherrypy.tree.mount(
-        MyWebService(bucket=bucket, gcs_filesystem=gcs_filesystem),
+        # x1
+        # MyWebService(bucket=bucket, gcs_filesystem=gcs_filesystem),
+        MyWebService(config=main_config),
         '/', conf)
     # myapp = cherrypy.tree
     # myapp = cherrypy.tree.mount(MyWebService(), '/', conf)
@@ -344,7 +354,12 @@ if is_running_on_gcp():
 
 elif __name__ == '__main__':
     logging.info('Not running on Google Cloud')
-    cherrypy.quickstart(MyWebService(), '/', conf)
+
+    with open('main-local.yaml', 'r') as f:
+        main_config = yaml.safe_load(f)
+    logging.info('%s: %r', 'main_config', main_config)
+
+    cherrypy.quickstart(MyWebService(config=main_config), '/', conf)
 
 else:
     logging.info('Not running on Google Cloud')
