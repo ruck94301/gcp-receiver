@@ -216,8 +216,11 @@ class MyWebService(object):
         # The kwargs msg value dictionary looks like json, but it's python not
         # json.  Decode it with ast.literal_eval, not json.loads.
         data = ast.literal_eval(kwargs.get('msg'))
-        # add a received timestamp to the msg dictionary
-        data.update({'received': now})
+
+        # # add a received timestamp to the data dictionary
+        # data.update({'received': now})
+        # add a received timestamp, external to the original data dictionary
+        data = {'received': now, 'data': data}
 
         # Assign a new output filename with timestamp+uuid, for easy
         # sorting and guaranteed uniqueness.
