@@ -46,6 +46,7 @@ import os
 import pprint
 import sys
 import textwrap
+# import time  # to intentionally slow processing for test purposes
 import uuid
 from zoneinfo import ZoneInfo
 
@@ -237,6 +238,9 @@ class MyWebService(object):
         logging.info('%s: %r', 'data', data)
 
         self.mywrite_jsonfile(f'{basename}.json', data)
+
+        # # to intentionally slow processing for test purposes
+        # time.sleep(8)
 
         msg = f'Method {self.myname()} returning.'
         logging.info(msg)
