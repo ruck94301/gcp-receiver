@@ -2,4 +2,5 @@ gunicorn
 cherrypy
 google-cloud-storage
 gcsfs
+psutil
 PyYAML

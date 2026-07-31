@@ -1,7 +1,7 @@
 import logging
 import sys
 
-import central_logging
+from . import central_logging
 
 
 logging.basicConfig(level=logging.INFO)

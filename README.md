@@ -8,11 +8,11 @@ See google doc [Cloud-based receiver on GCP](https://docs.google.com/document/d/
 
 * This webservice app is implemented in Python and CherryPy.
 * For development and test,
-    * Run the app locally, so it is serving at the local URL http://localhost:8080.<br>
+    * Run the app locally, so it is serving at the local URL "http://localhost:8080".<br>
     Exercise POST handling by running the included python script.<br>
     Exercise GET handling (to review POST data) by browsing to the
     local URL, with query parameters.
-    * "deploy" the app to GCP, so it is serving at the GCP-Project URL https://<project_address>.<br>
+    * "deploy" the app to GCP, so it is serving at the GCP-Project URL "https://<project_id>.appspot.com".<br>
     Exercise POST handling by running the included python script.<br>
     Exercise GET handling (to review POST data) by browsing to the
     GCP-Project URL, with query parameters.

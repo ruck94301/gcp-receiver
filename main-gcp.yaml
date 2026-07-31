@@ -1,3 +1,6 @@
-bucket_name: my_glp_project_name.appspot.com
-project_name: my_glp_project_name.appspot.com
+# google cloud platform "project id", as reported by (after gcloud init)
+#     % gcloud config get-value project
+# is a string, typically of the form "<adjective>-<noun>-\d{6}-[a-z]\d"
+project_id: my_glp_project_id
+
 enable_get_actions: False

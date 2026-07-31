@@ -1,2 +1,5 @@
 runtime: python312  # Or your desired Python version
+
+# gunicorn default timeout is 30 seconds
+# entrypoint: gunicorn -b :8080 --timeout=600 main:myapp
 entrypoint: gunicorn -b :8080 main:myapp

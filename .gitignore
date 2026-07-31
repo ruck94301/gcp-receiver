@@ -209,5 +209,5 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# custom for gcp-receiver
-tmp/
+# custom for gcp-receiver, datafile storage when running on localhost
+tmp.data-local/

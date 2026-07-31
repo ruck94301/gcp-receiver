@@ -1,16 +1,16 @@
-# Define shell functions facilitating app deployment.
+# Provide shell functions facilitating app deployment.
 #
 # Usage
 #     % source INIT.sh
 #     % DEPLOY
 #
 # Notes
-# 1.  The --quiet option (also, -q) for the gcloud CLI disables all 
+# *   The --quiet option (also, -q) for the gcloud CLI disables all 
 #     interactive prompts when running gcloud CLI commands and is useful 
 #     for scripting. If input is needed, defaults are used. If there 
 #     isn't a default, an error is raised.
 #
-# 2.  Use zsh setopt SH_WORD_SPLIT to enable traditional parameter 
+# *   Use zsh setopt SH_WORD_SPLIT to enable traditional parameter 
 #     expansion.  Why "2> /dev/null || true"?  Because bash doesn't have 
 #     a setopt command.
 
@@ -42,7 +42,7 @@ DEPLOY () {
 
     # stream logs
     (set -x; gcloud app logs tail -s default)
-    }
+}
 
 return
 # if return failed, then this script is being run instead of sourced.

@@ -13,6 +13,13 @@
 .git
 .gitignore
 
+# #!include:~/.gitignore
+# Employ a symlink to workaround this error
+#     ERROR: (gcloud.app.deploy) May only include files in the same directory.
+#!include:.symlink-to-global-gitignore-file
+
+#!include:.gitignore
+
 # Python pycache:
 __pycache__/
 # Ignored by the build system
